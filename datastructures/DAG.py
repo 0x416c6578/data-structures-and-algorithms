@@ -1,10 +1,15 @@
 """
 An adjacency list implementation of a directed acyclic graph
 """
+
+
 class DAG:
     def __init__(self):
         # The graph is represented as a dictionary mapping Node -> [Node] from a node to it's children
         self.graph = {}
+
+    def get_graph(self):
+        return self.graph.copy()
 
     def add_node(self, new_node):
         """
@@ -12,17 +17,34 @@ class DAG:
         :param new_node: Node to add
         :return: None
         """
-        self.graph.setdefault(new_node, set()) # Add the new node, making sure not to overwrite
+        self.graph.setdefault(new_node, set())  # Add the new node, making sure not to overwrite
 
-    def add_edge(self, from_node, to_node):
-        if self._creates_cycle(from_node, to_node):
+    def add_edge(self, source_node, destination_node):
+        if self._creates_cycle(source_node, destination_node):
             raise ValueError("Adding this edge would create a cycle")
+        self.graph[source_node].add(destination_node)
 
-    def _creates_cycle(self, from_node, to_node):
+    def _creates_cycle(self, source_node, destination_node):
         """
-        DFS to detect a cycle
-        :param from_node:
-        :param to_node:
+        DFS to detect a cycle from the destination node to see if it loops back to the source node - if so, adding that new
+        edge would create a cycle which breaks the DAG invariant so the edge can't be added
+        :param source_node:
+        :param destination_node:
         :return:
         """
-        # TODO: Finish implementation
+        visited = []
+        to_visit = [destination_node]
+
+        while to_visit:
+            # Grab the next node to visit in the stack
+            next_node = to_visit.pop()
+            # Add it to the list of visited nodes
+            visited.append(next_node)
+            # Add its children to the stack of nodes to visit next
+            to_visit = to_visit + ([child for child in self.graph[next_node]])
+
+            if source_node in visited:
+                # We have hit the source node - adding this new edge would create a cycle which we don't want
+                return True
+
+        return False
