@@ -1,6 +1,7 @@
 """
 An adjacency list implementation of a directed acyclic graph
 """
+from asyncio import get_child_watcher
 
 
 class DAG:
@@ -24,6 +25,20 @@ class DAG:
             raise ValueError("Adding this edge would create a cycle")
         self.graph[source_node].add(destination_node)
 
+    def get_children(self, node) -> list:
+        """
+        Depth first recursive to retrieve children
+        :param node: Node to find the children of
+        :return: Set containing all it's children
+        """
+        if self.graph.get(node) is None:
+            return []
+
+        children = set()
+        for child in self.graph[node]:
+            children = children.union(child).union(self.get_children(child))
+        return children
+
     def _creates_cycle(self, source_node, destination_node):
         """
         DFS to detect a cycle from the destination node to see if it loops back to the source node - if so, adding that new
@@ -41,7 +56,7 @@ class DAG:
             # Add it to the list of visited nodes
             visited.append(next_node)
             # Add its children to the stack of nodes to visit next
-            to_visit = to_visit + ([child for child in self.graph[next_node]])
+            to_visit = to_visit + list(self.graph[next_node])
 
             if source_node in visited:
                 # We have hit the source node - adding this new edge would create a cycle which we don't want

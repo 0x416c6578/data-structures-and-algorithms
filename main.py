@@ -1,3 +1,5 @@
+from asyncio import get_child_watcher
+
 from algorithms.BinarySearch import binary_search
 from algorithms.Search import breadth_first
 from algorithms.SelectionSort import selection_sort_recursive
@@ -25,5 +27,14 @@ if __name__ == '__main__':
     dag = DAG.DAG()
     dag.add_node("A")
     dag.add_node("B")
+    dag.add_node("C")
     print(dag.get_graph())
-    dag.add_edge("A", "A")
+    dag.add_edge("A", "B")
+    dag.add_edge("A", "C")
+    dag.add_edge("B", "C")
+    print(dag.get_graph())
+    try:
+        dag.add_edge("B", "A")
+    except ValueError as e:
+        print(e)
+    print(dag.get_children("A"))
