@@ -39,12 +39,21 @@ class DAG:
             children = children.union(child).union(self.get_children(child))
         return children
 
+    def has_child(self, node, target):
+        """
+        Determine whether a node has a specified child
+        :param node: The node to check
+        :param target: The child to search for
+        :return:
+        """
+        return target in self.get_children(node)
+
     def _creates_cycle(self, source_node, destination_node):
         """
         DFS to detect a cycle from the destination node to see if it loops back to the source node - if so, adding that new
         edge would create a cycle which breaks the DAG invariant so the edge can't be added
-        :param source_node:
-        :param destination_node:
+        :param source_node: The source node of the edge
+        :param destination_node: The destination node of the edge
         :return:
         """
         visited = []

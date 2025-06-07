@@ -16,13 +16,15 @@ def merge_intervals(intervals):
     merged_intervals = [intervals[0]]
 
     for current_interval in intervals[1:]:
+        current_merged_interval = merged_intervals[-1] # The latest merged interval
+
         # If the current interval start time is after the current merged interval end time, start a new "merged current" interval
-        if current_interval[0] > merged_intervals[-1][1]:
+        if current_interval[0] > current_merged_interval[1]:
             merged_intervals.append(current_interval)
         else:
             # Otherwise set the end time of the "merged current" interval to the max of the "merged current" or the current
             merged_intervals[-1] = (
-                merged_intervals[-1][0],
-                max(current_interval[1], merged_intervals[-1][1]),
+                current_merged_interval[0],
+                max(current_interval[1], current_merged_interval[1]),
             )
     return merged_intervals
