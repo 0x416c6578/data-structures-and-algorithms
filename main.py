@@ -1,9 +1,7 @@
-from asyncio import get_child_watcher
-
 from algorithms.BinarySearch import binary_search
 from algorithms.Search import breadth_first
-from algorithms.SelectionSort import selection_sort_recursive
-from algorithms.IntervalMerge import merge_intervals
+from algorithms.SelectionSort.SelectionSort import selection_sort_recursive
+from algorithms.IntervalMerge.IntervalMerge import merge_intervals
 from datastructures import DAG
 
 if __name__ == '__main__':
